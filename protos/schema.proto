@@ -3,7 +3,8 @@ syntax = "proto3";
 package backend;
 
 service User {
-  rpc SignIn (SignInRequest) returns (SignInResponse) {}
+  rpc SignIn (SignInRequest) returns (AuthPayload) {}
+  rpc SignUp (SignUpRequest) returns (AuthPayload) {}
 }
 
 message Token {
@@ -11,15 +12,22 @@ message Token {
   required string refreshToken = 2;
 }
 
-message SignInRequest {
-  required string username = 1;
-  required string password = 2;
-}
-
-message SignInResponse {
+message AuthPayload {
   required string id = 1;
   required string avatar = 2;
   required string username = 3;
   required string displayName = 4;
   required Token token = 5;
+}
+
+message SignInRequest {
+  required string username = 1;
+  required string password = 2;
+}
+
+message SignUpRequest {
+  required string username = 1;
+  required string password = 2;
+  required string displayName = 3;
+  required string avatarURL = 4;
 }
