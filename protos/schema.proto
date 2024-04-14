@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package backend;
+
+service User {
+  rpc SignIn (SignInRequest) returns (SignInResponse) {}
+}
+
+message Token {
+  required string accessToken = 1;
+  required string refreshToken = 2;
+}
+
+message SignInRequest {
+  required string username = 1;
+  required string password = 2;
+}
+
+message SignInResponse {
+  required string id = 1;
+  required string avatar = 2;
+  required string username = 3;
+  required string displayName = 4;
+  required Token token = 5;
+}
