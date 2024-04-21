@@ -2,9 +2,18 @@ syntax = "proto3";
 
 package backend;
 
+import "google/protobuf/timestamp.proto";
+
 service User {
   rpc SignIn (SignInRequest) returns (AuthPayload) {}
   rpc SignUp (SignUpRequest) returns (AuthPayload) {}
+}
+
+service Chat {
+  rpc CreateConversation (CreateConversationRequest) returns (Conversation) {}
+  rpc CreateChatMessage (CreateChatMessageRequest) returns (ChatMessage) {}
+  rpc SearchConversations (SearchConversationsRequest) returns (SearchConversationsPaginationResponse) {}
+  rpc GetChatMessage (GetChatMessageRequest) returns (GetChatMessagesPaginationResponse) {}
 }
 
 message Token {
@@ -30,4 +39,58 @@ message SignUpRequest {
   required string password = 2;
   required string displayName = 3;
   required string avatarURL = 4;
+}
+
+message ChatMessage {
+  required string id = 1;
+  required string conversationId = 2;
+  required string fromUserId = 3;
+  required string messageContent = 4;
+  required google.protobuf.Timestamp createdAt = 5;
+}
+
+enum ConversationType {
+  PRIVATE = 1;
+  GROUP = 2;
+}
+
+message CreateConversationRequest {
+  required string ownerId = 1;
+  required ConversationType type = 2;
+  optional string name = 3;
+  repeated string memberIds = 4;
+}
+
+message CreateChatMessageRequest {
+  required string conversationId = 1;
+  required string fromUserId = 2;
+  required string messageContent = 3;
+}
+
+message Conversation {
+  required string id = 1;
+  required string name = 2;
+  repeated string memberIds = 3;
+  repeated ChatMessage messages = 4;
+}
+
+message SearchConversationsRequest {
+  optional string userId = 1;
+  optional string term = 2;
+  optional int32 page = 3;
+  optional int32 limit = 4;
+}
+
+message SearchConversationsPaginationResponse {
+  repeated Conversation conversations = 1;
+}
+
+message GetChatMessageRequest {
+  required string conversationId = 1;
+  optional int32 page = 2;
+  optional int32 limit = 3;
+}
+
+message GetChatMessagesPaginationResponse {
+  repeated ChatMessage messages = 1;
 }
