@@ -16,6 +16,7 @@ service User {
   rpc SignIn (SignInRequest) returns (UserInfo) {}
   rpc SignUp (SignUpRequest) returns (UserInfo) {}
   rpc FindUser (FindUserRequest) returns (UserInfo) {}
+  rpc SearchUser (SearchUserRequest) returns (SearchUserResponse) {}
 }
 
 service Chat {
@@ -52,6 +53,14 @@ message SignUpRequest {
 
 message FindUserRequest {
   required string userId = 1;
+}
+
+message SearchUserRequest {
+  required string term = 1;
+}
+
+message SearchUserResponse {
+  repeated UserInfo users = 1;
 }
 
 message ChatMessage {
