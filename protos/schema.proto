@@ -13,8 +13,8 @@ Common prefix naming convention:
 */
 
 service User {
-  rpc SignIn (SignInRequest) returns (UserInfo) {}
-  rpc SignUp (SignUpRequest) returns (UserInfo) {}
+  rpc SignIn (SignInRequest) returns (AuthPayload) {}
+  rpc SignUp (SignUpRequest) returns (AuthPayload) {}
   rpc FindUser (FindUserRequest) returns (UserInfo) {}
   rpc SearchUser (SearchUserRequest) returns (SearchUserResponse) {}
 }
@@ -36,7 +36,11 @@ message UserInfo {
   required string avatar = 2;
   required string username = 3;
   required string displayName = 4;
-  optional Token token = 5;
+}
+
+message AuthPayload {
+  required UserInfo userInfo = 1;
+  required Token token = 2;
 }
 
 message SignInRequest {
