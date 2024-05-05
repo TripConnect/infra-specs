@@ -1,5 +1,5 @@
 # Database setup
-Setup these databases:  
+Setup all system databases that includes:  
 - Mysql
 - MongoDB
 ## Local lab
