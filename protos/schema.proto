@@ -61,6 +61,7 @@ message FindUserRequest {
 
 message SearchUserRequest {
   required string term = 1;
+  repeated string userIds = 2;
 }
 
 message SearchUserResponse {
@@ -81,9 +82,9 @@ enum ConversationType {
 }
 
 message CreateConversationRequest {
-  required string ownerId = 1;
-  required ConversationType type = 2;
-  optional string name = 3;
+  optional string ownerId = 1;
+  optional string name = 2;
+  required ConversationType type = 3;
   repeated string memberIds = 4;
 }
 
@@ -95,16 +96,20 @@ message CreateChatMessageRequest {
 
 message Conversation {
   required string id = 1;
-  required string name = 2;
-  repeated string memberIds = 3;
-  repeated ChatMessage messages = 4;
+  required ConversationType type = 2;
+  required string name = 3;
+  repeated string memberIds = 4;
+  repeated ChatMessage messages = 5;
+  required google.protobuf.Timestamp createdAt = 6;
 }
 
 message SearchConversationsRequest {
-  optional string userId = 1;
-  optional string term = 2;
-  optional int32 page = 3;
-  optional int32 limit = 4;
+  optional ConversationType type = 1;
+  repeated string memberIds = 2;
+  optional string term = 3;
+  optional int32 page = 4;
+  optional int32 limit = 5;
+  required int32 messageLimit = 6;
 }
 
 message SearchConversationsPaginationResponse {
