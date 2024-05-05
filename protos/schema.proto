@@ -23,6 +23,7 @@ service Chat {
   rpc CreateConversation (CreateConversationRequest) returns (Conversation) {}
   rpc CreateChatMessage (CreateChatMessageRequest) returns (ChatMessage) {}
   rpc SearchConversations (SearchConversationsRequest) returns (SearchConversationsPaginationResponse) {}
+  rpc FindConversation (FindConversationRequest) returns (Conversation) {}
   rpc GetChatMessage (GetChatMessageRequest) returns (GetChatMessagesPaginationResponse) {}
 }
 
@@ -79,6 +80,10 @@ message ChatMessage {
 enum ConversationType {
   PRIVATE = 1;
   GROUP = 2;
+}
+
+message FindConversationRequest {
+  required string conversationId = 1;
 }
 
 message CreateConversationRequest {
