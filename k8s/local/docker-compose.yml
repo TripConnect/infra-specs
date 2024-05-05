@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0.10-rc0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: chat-service
+    ports:
+      - "27017:27017"
+
+  mysql:
+    image: mysql:oracle
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user-service
+      MYSQL_USER: service
+      MYSQL_PASSWORD: service
+    ports:
+      - "3306:3306"
