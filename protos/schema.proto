@@ -63,6 +63,8 @@ message FindUserRequest {
 message SearchUserRequest {
   required string term = 1;
   repeated string userIds = 2;
+  optional int32 pageNumber = 3;
+  optional int32 pageSize = 4;
 }
 
 message SearchUserResponse {
@@ -84,6 +86,8 @@ enum ConversationType {
 
 message FindConversationRequest {
   required string conversationId = 1;
+  required int32 messagePage = 2;
+  required int32 messageLimit = 3;
 }
 
 message CreateConversationRequest {
