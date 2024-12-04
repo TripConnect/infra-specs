@@ -9,3 +9,8 @@ docker-compose -f k8s/local/docker-compose.yml up --force-recreate
 ```
 Dashboard:  
 - Kafka: http://localhost:8080
+## Staging
+```sh
+kubectl create namespace tripconnect
+kubectl apply -f k8s/staging/infra -n tripconnect
+```
