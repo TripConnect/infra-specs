@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: user-config
 data:
-  USER_SERVICE_PORT: 31072
+  USER_SERVICE_PORT: "31072"
   MYSQL_DATABASE: user-service
 ---
 apiVersion: apps/v1

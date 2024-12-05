@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: gateway-config
 data:
-  GATEWAY_SERVICE_PORT: 3107
+  GATEWAY_SERVICE_PORT: "3107"
 ---
 apiVersion: apps/v1
 kind: Deployment

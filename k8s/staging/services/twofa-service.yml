@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: twofa-config
 data:
-  TWOFA_SERVICE_PORT: 31074
+  TWOFA_SERVICE_PORT: "31074"
   POSTGRES_DATABASE: twofa-service
 ---
 apiVersion: apps/v1
