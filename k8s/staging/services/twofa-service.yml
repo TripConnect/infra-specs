@@ -1,47 +1,47 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-config
+  name: twofa-config
 data:
-  MYSQL_DATABASE: user-service
+  POSTGRES_DATABASE: twofa-service
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: twofa-service
   namespace: tripconnect
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: user-service
+      app: twofa-service
   template:
     metadata:
       labels:
-        app: user-service
+        app: twofa-service
     spec:
       containers:
-        - name: user-service
-          image: user-service:latest
+        - name: twofa-service
+          image: twofa-service:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 31072
+            - containerPort: 31073
           envFrom:
             - configMapRef:
                 name: application-config
             - configMapRef:
-                name: mysql-config
+                name: postgres-config
             - configMapRef:
-                name: user-config
+                name: twofa-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: twofa-service
 spec:
   selector:
-    app: user-service
+    app: twofa-service
   ports:
     - protocol: TCP
-      port: 31072
-      targetPort: 31072
+      port: 31073
+      targetPort: 31073

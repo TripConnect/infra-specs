@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+data:
+  KAFKA_ADDRESS: kafka
+  KAFKA_PORT: 9092
+  MYSQL_ADDRESS: mysql
+  POSTGRES_ADDRESS: postgres
+  MONGODB_ADDRESS: mongodb
+  JWT_SECRET_KEY: tripconnectshhh
