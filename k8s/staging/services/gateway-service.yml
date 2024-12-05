@@ -4,6 +4,9 @@ metadata:
   name: gateway-config
 data:
   GATEWAY_SERVICE_PORT: "3107"
+  ROUTE_USER_SERVICE: "user-service:31072"
+  ROUTE_CHAT_SERVICE: "chat-service:31073"
+  ROUTE_TWOFA_SERVICE: "twofa-service:31074"
 ---
 apiVersion: apps/v1
 kind: Deployment
