@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: zookeeper
 spec:
+  serviceName: zookeeper
   replicas: 1
   selector:
     matchLabels:
@@ -28,6 +29,7 @@ kind: Service
 metadata:
   name: zookeeper
 spec:
+  clusterIP: None
   selector:
     app: zookeeper
   ports:
@@ -36,10 +38,11 @@ spec:
       targetPort: 2181
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: kafka
 spec:
+  serviceName: kafka
   replicas: 1
   selector:
     matchLabels:
@@ -58,11 +61,11 @@ spec:
             - name: KAFKA_ZOOKEEPER_CONNECT
               value: "zookeeper:2181"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka:9092"
+              value: "PLAINTEXT://kafka-0.kafka:9092"
             - name: KAFKA_LISTENERS
               value: "PLAINTEXT://0.0.0.0:9092"
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-              value: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+              value: "PLAINTEXT:PLAINTEXT"
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
               value: "PLAINTEXT"
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
@@ -75,6 +78,7 @@ kind: Service
 metadata:
   name: kafka
 spec:
+  clusterIP: None
   selector:
     app: kafka
   ports:
@@ -103,7 +107,7 @@ spec:
             - name: KAFKA_CLUSTERS_0_NAME
               value: "LocalCluster"
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-              value: "kafka:29092"
+              value: "kafka-0.kafka:9092"
             - name: DYNAMIC_CONFIG_ENABLED
               value: "true"
           ports:
