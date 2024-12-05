@@ -37,7 +37,9 @@ metadata:
 spec:
   selector:
     app: gateway-service
+  type: NodePort
   ports:
     - protocol: TCP
       port: 3107
       targetPort: 3107
+      nodePort: 31070
