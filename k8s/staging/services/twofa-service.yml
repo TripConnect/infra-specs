@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: twofa-config
 data:
+  TWOFA_SERVICE_PORT: 31074
   POSTGRES_DATABASE: twofa-service
 ---
 apiVersion: apps/v1
@@ -25,7 +26,7 @@ spec:
           image: twofa-service:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 31073
+            - containerPort: 31074
           envFrom:
             - configMapRef:
                 name: application-config
@@ -43,5 +44,5 @@ spec:
     app: twofa-service
   ports:
     - protocol: TCP
-      port: 31073
-      targetPort: 31073
+      port: 31074
+      targetPort: 31074

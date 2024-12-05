@@ -1,48 +1,43 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-config
+  name: gateway-config
 data:
-  USER_SERVICE_PORT: 31072
-  MYSQL_DATABASE: user-service
+  GATEWAY_SERVICE_PORT: 3107
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: gateway-service
   namespace: tripconnect
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: user-service
+      app: gateway-service
   template:
     metadata:
       labels:
-        app: user-service
+        app: gateway-service
     spec:
       containers:
-        - name: user-service
-          image: user-service:latest
+        - name: gateway-service
+          image: gateway-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 31072
           envFrom:
             - configMapRef:
                 name: application-config
-            - configMapRef:
-                name: mysql-config
-            - configMapRef:
-                name: user-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: gateway-service
 spec:
   selector:
-    app: user-service
+    app: gateway-service
   ports:
     - protocol: TCP
-      port: 31072
-      targetPort: 31072
+      port: 3107
+      targetPort: 3107

@@ -1,29 +1,29 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-config
+  name: chat-config
 data:
-  USER_SERVICE_PORT: 31072
-  MYSQL_DATABASE: user-service
+  CHAT_SERVICE_PORT: 31073
+  MONGODB_CONNECTION_STRING: mongodb://admin:admin@mongo:27017/chat-service?authSource=admin
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: chat-service
   namespace: tripconnect
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: user-service
+      app: chat-service
   template:
     metadata:
       labels:
-        app: user-service
+        app: chat-service
     spec:
       containers:
-        - name: user-service
-          image: user-service:latest
+        - name: chat-service
+          image: chat-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 31072
@@ -31,18 +31,18 @@ spec:
             - configMapRef:
                 name: application-config
             - configMapRef:
-                name: mysql-config
+                name: mongodb-config
             - configMapRef:
-                name: user-config
+                name: chat-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: chat-service
 spec:
   selector:
-    app: user-service
+    app: chat-service
   ports:
     - protocol: TCP
-      port: 31072
-      targetPort: 31072
+      port: 31073
+      targetPort: 31073
