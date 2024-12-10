@@ -10,11 +10,11 @@ data:
   ROUTE_CHAT_SERVICE: "chat-service:31073"
   ROUTE_TWOFA_SERVICE: "twofa-service:31074"
   # kafka
-  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  KAFKA_BROKERS: kafka:9092
+  KAFKA_PORT: "9092"
   # database
   MYSQL_HOST: mysql
   KAFKA_ADDRESS: kafka
-  KAFKA_PORT: "9092"
   MYSQL_ADDRESS: mysql
   POSTGRES_ADDRESS: postgres
   MONGODB_ADDRESS: mongodb
