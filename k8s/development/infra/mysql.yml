@@ -5,7 +5,7 @@ metadata:
 data:
   MYSQL_ROOT_PASSWORD: root
   MYSQL_USER: service
-  POSTGRES_PASSWORD: service
+  MYSQL_PASSWORD: service
   MYSQL_DATABASE: user-service
 ---
 apiVersion: apps/v1

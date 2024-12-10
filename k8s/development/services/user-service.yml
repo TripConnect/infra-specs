@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: tripconnect
   name: user-config
 data:
   USER_SERVICE_PORT: "31072"
@@ -9,8 +10,8 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
   namespace: tripconnect
+  name: user-service
 spec:
   replicas: 3
   selector:
@@ -38,6 +39,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: user-service
 spec:
   selector:

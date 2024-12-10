@@ -11,14 +11,9 @@ Dashboard:
 - Kafka UI: http://localhost:8080
 ## Development lab
 In the staging environment, the infra and microservices will all run on the Kubernetes environment.
-1. Initialize infrastructure
 ```sh
 kubectl create namespace tripconnect
-kubectl apply -f k8s/development/infra -n tripconnect
-```
-2. Deploy all services
-```sh
-kubectl apply -f k8s/development/services -n tripconnect
+kubectl apply -f k8s/development --recursive -n tripconnect
 ```
 Dashboard:  
 - Kafka UI: http://localhost:30080
