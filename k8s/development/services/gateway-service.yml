@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: gateway-config
 data:
-  GATEWAY_SERVICE_PORT: "3107"
+  GATEWAY_SERVICE_PORT: "31071"
   ROUTE_USER_SERVICE: "user-service:31072"
   ROUTE_CHAT_SERVICE: "chat-service:31073"
   ROUTE_TWOFA_SERVICE: "twofa-service:31074"
@@ -26,9 +26,9 @@ spec:
       containers:
         - name: gateway-service
           image: gateway-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never # Always
           ports:
-            - containerPort: 31072
+            - containerPort: 31071
           envFrom:
             - configMapRef:
                 name: application-config
@@ -43,6 +43,6 @@ spec:
   type: NodePort
   ports:
     - protocol: TCP
-      port: 3107
-      targetPort: 3107
-      nodePort: 31070
+      port: 31071
+      targetPort: 31071
+      nodePort: 31071
