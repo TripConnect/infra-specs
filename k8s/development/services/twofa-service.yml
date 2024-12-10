@@ -24,7 +24,7 @@ spec:
       containers:
         - name: twofa-service
           image: twofa-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never # Keep as 'Always' for registry
           ports:
             - containerPort: 31074
           envFrom:

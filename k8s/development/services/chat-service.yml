@@ -24,7 +24,7 @@ spec:
       containers:
         - name: chat-service
           image: chat-service:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never # Keep as 'Always' for registry
           ports:
             - containerPort: 31072
           envFrom:
