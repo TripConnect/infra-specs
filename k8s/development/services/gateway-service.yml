@@ -5,9 +5,6 @@ metadata:
   namespace: tripconnect
 data:
   GATEWAY_SERVICE_PORT: "31071"
-  ROUTE_USER_SERVICE: "user-service:31072"
-  ROUTE_CHAT_SERVICE: "chat-service:31073"
-  ROUTE_TWOFA_SERVICE: "twofa-service:31074"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,6 +30,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: gateway-config
+            - configMapRef:
+                name: application-config
 ---
 apiVersion: v1
 kind: Service

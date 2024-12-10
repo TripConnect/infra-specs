@@ -3,9 +3,18 @@ kind: ConfigMap
 metadata:
   name: application-config
 data:
+  # system
+  JWT_SECRET_KEY: tripconnectshhh
+  # microservices
+  ROUTE_USER_SERVICE: "user-service:31072"
+  ROUTE_CHAT_SERVICE: "chat-service:31073"
+  ROUTE_TWOFA_SERVICE: "twofa-service:31074"
+  # kafka
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  # database
+  MYSQL_HOST: mysql
   KAFKA_ADDRESS: kafka
   KAFKA_PORT: "9092"
   MYSQL_ADDRESS: mysql
   POSTGRES_ADDRESS: postgres
   MONGODB_ADDRESS: mongodb
-  JWT_SECRET_KEY: tripconnectshhh
