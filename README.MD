@@ -7,9 +7,9 @@ In the local environment, the microservices will run directly in the localhost a
 # Up
 docker-compose -f k8s/local/docker-compose.yml up --force-recreate
 # Down
-docker-compose -f k8s/local/docker-compose.yml down --force-recreate
+docker-compose -f k8s/local/docker-compose.yml down
 # Status
-docker ps
+docker-compose -f k8s/local/docker-compose.yml ps
 ```
 Dashboard:  
 - Kafka UI: http://localhost:8080
