@@ -27,3 +27,4 @@ kubectl get pods -n tripconnect
 ```
 Dashboard:  
 - Kafka UI: http://localhost:30080
+- Kubernetes dashboard: http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/pod?namespace=tripconnect (`kubectl proxy` required). [Documentation](https://andrewlock.net/running-kubernetes-and-the-dashboard-with-docker-desktop/)
