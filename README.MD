@@ -23,7 +23,7 @@ kubectl apply -f k8s/development/services --recursive -n tripconnect
 # Down
 kubectl delete -f k8s/development --recursive -n tripconnect
 # Status
-kubectl get pods -n tripconnect
+kubectl get all -n tripconnect
 ```
 Dashboard:  
 - Kafka UI: http://localhost:30080
