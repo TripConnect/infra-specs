@@ -4,7 +4,7 @@ metadata:
   name: chat-config
 data:
   CHAT_SERVICE_PORT: "31073"
-  MONGODB_CONNECTION_STRING: mongodb://admin:admin@mongo:27017/chat-service?authSource=admin
+  MONGODB_CONNECTION_STRING: mongodb://admin:admin@mongodb:27017/chat-service?authSource=admin
 ---
 apiVersion: apps/v1
 kind: Deployment
