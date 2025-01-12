@@ -29,4 +29,4 @@ kubectl get all -n tripconnect
 ```
 Dashboard:  
 - Kafka UI: http://localhost:30080
-- Kubernetes dashboard: http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/pod?namespace=tripconnect (`kubectl proxy` required). [Documentation](https://andrewlock.net/running-kubernetes-and-the-dashboard-with-docker-desktop/)
+- Kubernetes dashboard: http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/pod?namespace=tripconnect (`kubectl proxy` required). How to setup? following the [step by step documentation](https://andrewlock.net/running-kubernetes-and-the-dashboard-with-docker-desktop/) with manifest sources of [dashboard](https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml), [metric server](https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.4.2/components.yaml).
