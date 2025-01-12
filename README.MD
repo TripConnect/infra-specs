@@ -20,8 +20,10 @@ In the staging environment, the infra and microservices will all run on the Kube
 kubectl create namespace tripconnect
 kubectl apply -f k8s/development/infra --recursive -n tripconnect
 kubectl apply -f k8s/development/services --recursive -n tripconnect
+kubectl apply -f k8s/development/dashboard --recursive
 # Down
 kubectl delete -f k8s/development --recursive -n tripconnect
+kubectl delete -f k8s/development/dashboard
 # Status
 kubectl get all -n tripconnect
 ```
