@@ -17,7 +17,6 @@ Dashboard:
 In the staging environment, the infra and microservices will all run on the Kubernetes environment.
 ```sh
 # Up
-kubectl create namespace tripconnect
 kubectl apply -f k8s/development/infra --recursive -n tripconnect
 kubectl apply -f k8s/development/services --recursive -n tripconnect
 kubectl apply -f k8s/development/dashboard --recursive
