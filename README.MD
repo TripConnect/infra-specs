@@ -17,12 +17,13 @@ Dashboard:
 In the staging environment, the infra and microservices will all run on the Kubernetes environment.
 ```sh
 # Up
-kubectl apply -f k8s/development/infra --recursive -n tripconnect
-kubectl apply -f k8s/development/services --recursive -n tripconnect
+kubectl apply -f k8s/development/infra --recursive
+kubectl apply -f k8s/development/services --recursive
 kubectl apply -f k8s/development/dashboard --recursive
 # Down
-kubectl delete -f k8s/development --recursive -n tripconnect
 kubectl delete -f k8s/development/dashboard --recursive
+kubectl delete -f k8s/development/services --recursive
+kubectl delete -f k8s/development/infra --recursive
 # Status
 kubectl get all -n tripconnect
 ```
