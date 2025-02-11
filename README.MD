@@ -23,12 +23,17 @@ kubectl apply -f k8s/development/infra --recursive
 kubectl apply -f k8s/development/services --recursive
 
 kubectl apply -f k8s/development/dashboard/dashboard.yml
-kubectl apply -f k8s/development/dashboard/metrics-server.yml
-kubectl apply -f k8s/development/dashboard/permission.yml
+kubectl apply -f k8s/development/dashboard --recursive
+
 # Down
-kubectl delete -f k8s/development/dashboard --recursive
-kubectl delete -f k8s/development/services --recursive
+kubectl delete -f k8s/development/infra/application.yml
 kubectl delete -f k8s/development/infra --recursive
+
+kubectl delete -f k8s/development/services --recursive
+
+kubectl delete -f k8s/development/dashboard/dashboard.yml
+kubectl delete -f k8s/development/dashboard --recursive
+
 # Status
 kubectl get all -n tripconnect
 ```
