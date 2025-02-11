@@ -20,6 +20,7 @@ In the staging environment, the infra and microservices will all run on the Kube
 kubectl apply -f k8s/development/infra --recursive
 kubectl apply -f k8s/development/services --recursive
 kubectl apply -f k8s/development/dashboard --recursive
+kubectl apply -f k8s/development --recursive -n tripconnect
 # Down
 kubectl delete -f k8s/development/dashboard --recursive
 kubectl delete -f k8s/development/services --recursive

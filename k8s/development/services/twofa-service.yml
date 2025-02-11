@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: tripconnect
   name: twofa-config
 data:
   TWOFA_SERVICE_PORT: "31074"
@@ -9,8 +10,8 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: twofa-service
   namespace: tripconnect
+  name: twofa-service
 spec:
   replicas: 1
   selector:
@@ -38,6 +39,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: twofa-service
 spec:
   selector:

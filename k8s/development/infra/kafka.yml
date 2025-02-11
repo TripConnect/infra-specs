@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: tripconnect
   name: zookeeper
 spec:
   serviceName: zookeeper
@@ -27,6 +28,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: zookeeper
 spec:
   clusterIP: None
@@ -40,6 +42,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: tripconnect
   name: kafka
 spec:
   serviceName: kafka
@@ -76,6 +79,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: kafka
 spec:
   clusterIP: None
@@ -89,6 +93,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: tripconnect
   name: kafka-ui
 spec:
   replicas: 1
@@ -116,6 +121,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: kafka-ui
 spec:
   selector:

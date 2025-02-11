@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: tripconnect
   name: chat-config
 data:
   CHAT_SERVICE_PORT: "31073"
@@ -38,6 +39,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: tripconnect
   name: chat-service
 spec:
   selector:
