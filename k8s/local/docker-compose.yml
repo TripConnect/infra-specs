@@ -56,3 +56,28 @@ services:
       KAFKA_CLUSTERS_0_NAME: "LocalCluster"
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:29092"
       DYNAMIC_CONFIG_ENABLED: "true"
+
+  cassandra:
+    image: cassandra:3.11.16
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_AUTHENTICATOR=PasswordAuthenticator
+      - CASSANDRA_AUTHORIZER=CassandraAuthorizer
+      - CASSANDRA_SUPERUSER_SETUP=true
+      - CASSANDRA_SUPERUSER_NAME=cassandra
+      - CASSANDRA_SUPERUSER_PASSWORD=tripconnect3107
+
+  elasticsearch:
+    image: elasticsearch:9.0.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
