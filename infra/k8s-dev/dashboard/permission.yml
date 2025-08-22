@@ -6,7 +6,7 @@ metadata:
 
 ---
 
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 kind: Role
 metadata:
   name: tripconnect-full-access
@@ -27,7 +27,7 @@ rules:
 
 ---
 
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 kind: RoleBinding
 metadata:
   name: kubernetes-dashboard-tripconnect-binding
@@ -39,4 +39,4 @@ subjects:
 roleRef:
   kind: Role
   name: tripconnect-full-access
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.infra.io

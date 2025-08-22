@@ -5,11 +5,11 @@ The infra management repository
 In the local environment, the microservices will run directly in the localhost and other resources (database, kafka, etc) will run as containers and expose these ports.  
 ```sh
 # Up
-docker-compose -f k8s/local/docker-compose.yml up --force-recreate
+docker-compose -f infra/local/docker-compose.yml up --force-recreate
 # Down
-docker-compose -f k8s/local/docker-compose.yml down
+docker-compose -f infra/local/docker-compose.yml down
 # Status
-docker-compose -f k8s/local/docker-compose.yml ps
+docker-compose -f infra/local/docker-compose.yml ps
 ```
 Dashboard:  
 - Kafka UI: http://localhost:8080
@@ -17,22 +17,22 @@ Dashboard:
 In the staging environment, the infra and microservices will all run on the Kubernetes environment.
 ```sh
 # Up
-kubectl apply -f k8s/development/infra/application.yml
-kubectl apply -f k8s/development/infra --recursive
+kubectl apply -f infra/k8s-dev/infra/application.yml
+kubectl apply -f infra/k8s-dev/infra --recursive
 
-kubectl apply -f k8s/development/services --recursive
+kubectl apply -f infra/k8s-dev/services --recursive
 
-kubectl apply -f k8s/development/dashboard/dashboard.yml
-kubectl apply -f k8s/development/dashboard --recursive
+kubectl apply -f infra/k8s-dev/dashboard/dashboard.yml
+kubectl apply -f infra/k8s-dev/dashboard --recursive
 
 # Down
-kubectl delete -f k8s/development/infra/application.yml
-kubectl delete -f k8s/development/infra --recursive
+kubectl delete -f infra/k8s-dev/infra/application.yml
+kubectl delete -f infra/k8s-dev/infra --recursive
 
-kubectl delete -f k8s/development/services --recursive
+kubectl delete -f infra/k8s-dev/services --recursive
 
-kubectl delete -f k8s/development/dashboard/dashboard.yml
-kubectl delete -f k8s/development/dashboard --recursive
+kubectl delete -f infra/k8s-dev/dashboard/dashboard.yml
+kubectl delete -f infra/k8s-dev/dashboard --recursive
 
 # Status
 kubectl get all -n tripconnect

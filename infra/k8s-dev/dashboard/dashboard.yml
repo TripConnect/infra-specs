@@ -91,7 +91,7 @@ metadata:
 ---
 
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 metadata:
   labels:
     k8s-app: kubernetes-dashboard
@@ -121,20 +121,20 @@ rules:
 ---
 
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 metadata:
   labels:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
 rules:
   # Allow Metrics Scraper to get metrics from the Metrics server
-  - apiGroups: ["metrics.k8s.io"]
+  - apiGroups: ["metrics.infra.io"]
     resources: ["pods", "nodes"]
     verbs: ["get", "list", "watch"]
 
 ---
 
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 kind: RoleBinding
 metadata:
   labels:
@@ -142,7 +142,7 @@ metadata:
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.infra.io
   kind: Role
   name: kubernetes-dashboard
 subjects:
@@ -152,12 +152,12 @@ subjects:
 
 ---
 
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.infra.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: kubernetes-dashboard
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.infra.io
   kind: ClusterRole
   name: kubernetes-dashboard
 subjects:
