@@ -81,3 +81,17 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    ports:
+      - "8500:8500"    # HTTP API + UI
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+    command: >
+      agent
+      -server
+      -bootstrap-expect=1
+      -ui
+      -client=0.0.0.0
