@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tripconnect
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: tripconnect
+  name: application-config
+data:
+  # system
+  JWT_SECRET_KEY: tripconnectshhh
+  # kafka
+  KAFKA_BROKERS: kafka:9092
+  KAFKA_PORT: "9092"
+  # database
+  MYSQL_HOST: mysql
+  KAFKA_ADDRESS: kafka
+  MYSQL_ADDRESS: mysql
+  POSTGRES_ADDRESS: postgres
+  MONGODB_ADDRESS: mongodb
