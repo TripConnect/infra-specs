@@ -13,21 +13,24 @@ metadata:
   namespace: tripconnect
 rules:
   - apiGroups: [ "" ]
-    resources: [ "pods", "services", "configmaps", "secrets", "persistentvolumeclaims" ]
+    resources: [ "pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "events" ]
     verbs: [ "get", "list", "watch", "create", "update", "delete" ]
-  - apiGroups: [ "apps" ]
-    resources: [ "deployments", "statefulsets", "daemonsets", "replicasets" ]
-    verbs: [ "get", "list", "watch", "create", "update", "delete" ]
-  - apiGroups: [ "batch" ]
-    resources: [ "jobs", "cronjobs" ]
-    verbs: [ "get", "list", "watch", "create", "update", "delete" ]
-  - apiGroups: [ "" ]
-    resources: [ "pods/exec" ]
-    verbs: [ "create" ]
+
   - apiGroups: [ "" ]
     resources: [ "pods/log" ]
     verbs: [ "get", "list", "watch" ]
 
+  - apiGroups: [ "" ]
+    resources: [ "pods/exec" ]
+    verbs: [ "create" ]
+
+  - apiGroups: [ "apps" ]
+    resources: [ "deployments", "statefulsets", "daemonsets", "replicasets" ]
+    verbs: [ "get", "list", "watch", "create", "update", "delete" ]
+
+  - apiGroups: [ "batch" ]
+    resources: [ "jobs", "cronjobs" ]
+    verbs: [ "get", "list", "watch", "create", "update", "delete" ]
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
