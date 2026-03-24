@@ -40,6 +40,9 @@ metadata:
 spec:
   selector:
     app: gateway-service
+  type: NodePort
   ports:
-    - port: 31071
+    - protocol: TCP
+      port: 31071
       targetPort: 31071
+      nodePort: 31071
