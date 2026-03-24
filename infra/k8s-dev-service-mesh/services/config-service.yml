@@ -14,7 +14,9 @@ spec:
         app: config-service
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/transparent-proxy: "false"
+        consul.hashicorp.com/connect-service: "config-service"
+        consul.hashicorp.com/connect-service-port: "31070"
+        consul.hashicorp.com/transparent-proxy: "true"
     spec:
       containers:
         - name: config-service

@@ -14,7 +14,9 @@ spec:
         app: gateway-service
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/transparent-proxy: "false"
+        consul.hashicorp.com/connect-service: "gateway-service"
+        consul.hashicorp.com/connect-service-port: "31071"
+        consul.hashicorp.com/transparent-proxy: "true"
     spec:
       containers:
         - name: gateway-service

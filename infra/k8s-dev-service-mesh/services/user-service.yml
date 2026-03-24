@@ -15,10 +15,17 @@ spec:
       annotations:
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service: "user-service"
+        consul.hashicorp.com/connect-service-port: "31072"
+        consul.hashicorp.com/transparent-proxy: "true"
     spec:
       containers:
         - name: user-service
-          image: user-service:latest
-          imagePullPolicy: Never # Keep as 'Always' for registry
+          image: ndtrongdev/user-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 31072
+          env:
+            - name: SERVICE_NAME
+              value: "user-service"
+            - name: NODE_ENV
+              value: k8s-dev
