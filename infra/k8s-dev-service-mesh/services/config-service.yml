@@ -24,6 +24,11 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 31070
+          env:
+            - name: SERVICE_NAME
+              value: "config-service"
+            - name: NODE_ENV
+              value: k8s-dev
 
 ---
 
