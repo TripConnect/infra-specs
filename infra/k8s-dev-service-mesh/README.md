@@ -33,14 +33,28 @@ kubectl label namespace tripconnect consul.hashicorp.com/connect-inject=enabled
 
 ### Up
 
-ls
+#### Dashboard
 
-```sh
+```shell
+helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+helm repo update
+helm install headlamp-ui headlamp/headlamp --namespace kube-system
+kubectl -n kube-system create serviceaccount headlamp-admin
+kubectl create clusterrolebinding headlamp-admin --serviceaccount=kube-system:headlamp-admin --clusterrole=cluster-admin
+
+kubectl -n kube-system create token headlamp-ui # Gen token
+
+kubectl delete deployment metrics-server -n kube-system --ignore-not-found
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl -n kube-system port-forward svc/headlamp-ui 4466:80
+```
+
+#### Services
+
+```shell
 kubectl apply -f infra/k8s-dev-service-mesh/infra/application.yml
 kubectl apply -f infra/k8s-dev-service-mesh/infra --recursive
-
-kubectl apply -f infra/k8s-dev-service-mesh/dashboard/dashboard.yml
-kubectl apply -f infra/k8s-dev-service-mesh/dashboard --recursive
 
 kubectl apply -f infra/k8s-dev-service-mesh/services --recursive
 ```
@@ -50,9 +64,6 @@ kubectl apply -f infra/k8s-dev-service-mesh/services --recursive
 ```sh
 kubectl delete -f infra/k8s-dev-service-mesh/infra/application.yml
 kubectl delete -f infra/k8s-dev-service-mesh/infra --recursive
-
-kubectl delete -f infra/k8s-dev-service-mesh/dashboard/dashboard.yml
-kubectl delete -f infra/k8s-dev-service-mesh/dashboard --recursive
 
 kubectl delete -f infra/k8s-dev-service-mesh/services --recursive
 ```
