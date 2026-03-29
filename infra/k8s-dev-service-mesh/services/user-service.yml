@@ -41,5 +41,5 @@ spec:
   selector:
     app: user-service
   ports:
-    - port: 31072
+    - port: 50051
       targetPort: 31072
