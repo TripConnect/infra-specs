@@ -48,7 +48,7 @@ kubectl delete deployment metrics-server -n kube-system --ignore-not-found
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
 kubectl -n kube-system port-forward svc/headlamp-ui 4466:80 # Expose K8S dashboard
-kubectl port-forward svc/gateway-service -n tripconnect 31072:31071 # Expose gateway
+kubectl port-forward svc/gateway-service -n tripconnect 31071:31071 # Expose gateway
 kubectl port-forward svc/consul-ui -n consul 8500:80 # Export Consul UI dashboard
 ```
 

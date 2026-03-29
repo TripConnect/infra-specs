@@ -23,7 +23,8 @@ spec:
           image: ndtrongdev/user-service:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 31072
+            - name: grpc
+              containerPort: 31072
           env:
             - name: SERVICE_NAME
               value: "user-service"
@@ -41,5 +42,6 @@ spec:
   selector:
     app: user-service
   ports:
-    - port: 50051
+    - name: grpc
+      port: 50051
       targetPort: 31072
