@@ -1,0 +1,12 @@
+namespace: tripconnect
+image:
+  namespace: ndtrongdev
+  tag: latest
+replicaCount: 1
+pullPolicy: Always
+env: k8s-dev
+consul:
+  inject: true
+  transparentProxy: true
+service:
+  type: ClusterIP

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "k8s-dev-helm.deployment-name" . }}
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "k8s-dev-helm.deployment-name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "k8s-dev-helm.deployment-name" . }}
+      annotations:
+        {{ include "k8s-dev-helm.consulAnnotations" . }}
+    spec:
+      containers:
+        - name: gateway-service
+          image: {{ include "k8s-dev-helm.image" . }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ include "k8s-dev-helm.containerPort" . }}
+          env:
+            - name: SERVICE_NAME
+              value: {{ include "k8s-dev-helm.deployment-name" . }}
+            - name: NODE_ENV
+              value: {{ .Values.env }}

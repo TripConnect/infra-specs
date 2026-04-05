@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
+  name: {{ include "k8s-dev-helm.deployment-name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "k8s-dev-helm.deployment-name" . }}
+  ports:
+    - port: {{ include "k8s-dev-helm.containerPort" }}
+      targetPort: {{ include "k8s-dev-helm.containerPort" }}
+      name: grpc

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: k8s-dev-helm
+description: Helm chart for the Trip Connect development service-mesh stack
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
