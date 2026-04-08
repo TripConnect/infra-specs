@@ -1,4 +1,5 @@
 apiVersion: v2
+icon: https://avatars.githubusercontent.com/u/137086278?s=16&v=4
 name: k8s-dev-helm
 description: Helm chart for the Trip Connect development service-mesh stack
 type: application
