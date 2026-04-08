@@ -1,4 +1,5 @@
-image: gateway-service
+image:
+  name: gateway-service
 containerPort: 31071
 service:
   type: NodePort

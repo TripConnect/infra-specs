@@ -1,2 +1,3 @@
-image: config-service
+image:
+  name: config-service
 containerPort: 31070

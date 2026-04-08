@@ -1,2 +1,3 @@
-image: user-service
+image:
+  name: user-service
 containerPort: 31072
