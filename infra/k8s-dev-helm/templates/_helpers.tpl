@@ -36,13 +36,13 @@ app.kubernetes.io/component: {{ .component }}
 {{- end }}
 {{- end }}
 
-{{ define "k8s-dev-helm.consulAnnotations" -}}
+{{ define "k8s-dev-helm.consulAnnotations" }}
 {{- if .Values.consul.inject -}}
 consul.hashicorp.com/connect-inject: {{ .Values.consul.inject | quote }}
 consul.hashicorp.com/connect-service: {{ required "image.name is required" .Values.image.name | quote }}
 consul.hashicorp.com/connect-service-port: {{ printf "%v" .Values.containerPort | quote }}
 consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul.transparentProxy | quote }}
-{{- end -}}
+{{- end }}
 {{- end }}
 
 {{ define "k8s-dev-helm.containerPort" -}}

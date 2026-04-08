@@ -13,7 +13,7 @@ spec:
       labels:
         app: {{ include "k8s-dev-helm.deployment-name" . }}
       annotations:
-{{- include "k8s-dev-helm.consulAnnotations" . | nindent 8 }}
+        {{- include "k8s-dev-helm.consulAnnotations" . | nindent 8 }}
     spec:
       containers:
         - name: gateway-service
