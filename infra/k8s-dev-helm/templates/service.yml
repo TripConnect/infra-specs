@@ -8,6 +8,6 @@ spec:
   selector:
     app: {{ include "k8s-dev-helm.deployment-name" . }}
   ports:
-    - port: {{ include "k8s-dev-helm.containerPort" }}
-      targetPort: {{ include "k8s-dev-helm.containerPort" }}
+    - port: {{ include "k8s-dev-helm.containerPort" . }}
+      targetPort: {{ include "k8s-dev-helm.containerPort" . }}
       name: grpc

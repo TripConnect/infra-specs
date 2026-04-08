@@ -1,5 +1,5 @@
 {{- define "k8s-dev-helm.deployment-name" -}}
-{{ .Values.image.name | trunc 63 | trimSuffix "-" }}
+{{ required "image.name is required" .Values.image.name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{ define "k8s-dev-helm.chart" -}}
@@ -37,9 +37,9 @@ app.kubernetes.io/component: {{ .component }}
 {{- end }}
 
 {{ define "k8s-dev-helm.consulAnnotations" -}}
-{{- if .consul.inject }}
+{{- if .Values.consul.inject }}
 consul.hashicorp.com/connect-inject: {{ .Values.consul.inject | quote }}
-consul.hashicorp.com/connect-service: {{ .Values.image.name | quote }}
+consul.hashicorp.com/connect-service: {{ required "image.name is required" .Values.image.name | quote }}
 consul.hashicorp.com/connect-service-port: {{ printf "%v" .Values.containerPort | quote }}
 consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul.transparentProxy | quote }}
 {{- end }}
@@ -50,5 +50,5 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
 {{- end }}
 
 {{ define "k8s-dev-helm.image" -}}
-{{ printf "%s/%s:%s" .Values.image.namespace .Values.image.name .Values.image.tag | quote }}
+{{ printf "%s/%s:%s" .Values.image.namespace (required "image.name is required" .Values.image.name) .Values.image.tag | quote }}
 {{- end }}
