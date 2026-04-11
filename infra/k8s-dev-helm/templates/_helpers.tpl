@@ -46,7 +46,7 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
 {{- end }}
 
 {{ define "k8s-dev-helm.containerPort" -}}
-{{ .Values.containerPort | quote}}
+{{ required ".containerPort is required" .Values.containerPort }}
 {{- end }}
 
 {{ define "k8s-dev-helm.image" -}}

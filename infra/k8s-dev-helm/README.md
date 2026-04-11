@@ -10,3 +10,13 @@ helm install k8s-dev-helm ./infra/k8s-dev-helm --dry-run=client --debug --set im
 ```sh
 helm template gateway-service infra/k8s-dev-helm/ -f infra/k8s-dev-helm/values/deployment/gateway-service.yml > gateway-service.yaml
 ```
+# Deployment
+## Check history
+```shell
+helm history config-service
+```
+## Deployment
+Example:
+```sh
+helm upgrade --install config-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
+```
