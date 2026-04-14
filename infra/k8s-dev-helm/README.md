@@ -20,3 +20,10 @@ Example:
 ```sh
 helm upgrade --install config-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
 ```
+# Tips
+When Consul cannot start after a long time
+```shell
+helm uninstall consul -n consul
+kubectl delete pvc --all -n consul
+kubectl delete namespace consul
+```

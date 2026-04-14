@@ -16,7 +16,7 @@ spec:
         {{- include "k8s-dev-helm.consulAnnotations" . | nindent 8 }}
     spec:
       containers:
-        - name: gateway-service
+        - name: {{ include "k8s-dev-helm.deployment-name" . }}
           image: {{ include "k8s-dev-helm.image" . }}
           imagePullPolicy: Always
           ports:
