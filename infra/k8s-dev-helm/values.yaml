@@ -1,4 +1,6 @@
 namespace: tripconnect
+workload:
+  enabled: true
 image:
   namespace: ndtrongdev
   tag: latest
@@ -10,3 +12,57 @@ consul:
   transparentProxy: true
 service:
   type: ClusterIP
+infra:
+  kafka:
+    enabled: true
+  mongo:
+    enabled: true
+  postgres:
+    enabled: true
+observability:
+  enabled: true
+  instrumentation:
+    enabled: true
+    endpoint: http://otel-collector:4317
+    protocol: grpc
+    tracesExporter: otlp
+    metricsExporter: none
+    logsExporter: none
+    propagators: tracecontext,baggage
+    tracesSampler: parentbased_always_on
+    resourceAttributes: {}
+  jaeger:
+    enabled: false
+    name: jaeger
+    replicaCount: 1
+    image:
+      repository: jaegertracing/all-in-one
+      tag: "1.57"
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+    resources: {}
+  collector:
+    enabled: false
+    name: otel-collector
+    replicaCount: 1
+    image:
+      repository: otel/opentelemetry-collector-contrib
+      tag: "0.101.0"
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+    memoryLimiter:
+      enabled: true
+      checkInterval: 1s
+      limitMib: 256
+      spikeLimitMib: 64
+    exporters:
+      jaeger:
+        endpoint: jaeger:4317
+        tls:
+          insecure: true
+      debug:
+        enabled: false
+        verbosity: basic
+    resources: {}

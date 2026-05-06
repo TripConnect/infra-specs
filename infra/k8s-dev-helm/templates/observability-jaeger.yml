@@ -1,0 +1,59 @@
+{{- if and .Values.observability.enabled .Values.observability.jaeger.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
+  name: {{ .Values.observability.jaeger.name }}
+  labels:
+    app: {{ .Values.observability.jaeger.name }}
+spec:
+  replicas: {{ .Values.observability.jaeger.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.observability.jaeger.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.observability.jaeger.name }}
+      annotations:
+        consul.hashicorp.com/connect-inject: "false"
+    spec:
+      containers:
+        - name: jaeger
+          image: "{{ .Values.observability.jaeger.image.repository }}:{{ .Values.observability.jaeger.image.tag }}"
+          imagePullPolicy: {{ .Values.observability.jaeger.image.pullPolicy }}
+          env:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+            - name: SPAN_STORAGE_TYPE
+              value: memory
+          ports:
+            - name: query-http
+              containerPort: 16686
+            - name: otlp-grpc
+              containerPort: 4317
+            - name: otlp-http
+              containerPort: 4318
+          resources:
+            {{- toYaml .Values.observability.jaeger.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
+  name: {{ .Values.observability.jaeger.name }}
+spec:
+  type: {{ .Values.observability.jaeger.service.type }}
+  selector:
+    app: {{ .Values.observability.jaeger.name }}
+  ports:
+    - name: query-http
+      port: 16686
+      targetPort: query-http
+    - name: otlp-grpc
+      port: 4317
+      targetPort: otlp-grpc
+    - name: otlp-http
+      port: 4318
+      targetPort: otlp-http
+{{- end }}

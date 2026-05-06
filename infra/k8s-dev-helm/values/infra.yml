@@ -1,0 +1,11 @@
+workload:
+  enabled: false
+infra:
+  kafka:
+    enabled: true
+  mongo:
+    enabled: true
+  postgres:
+    enabled: true
+observability:
+  enabled: false

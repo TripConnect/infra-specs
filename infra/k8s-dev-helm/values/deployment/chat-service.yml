@@ -1,3 +1,10 @@
 image:
   name: chat-service
 containerPort: 31073
+infra:
+  kafka:
+    enabled: false
+  mongo:
+    enabled: false
+  postgres:
+    enabled: false

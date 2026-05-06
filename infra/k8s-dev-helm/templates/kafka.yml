@@ -1,3 +1,4 @@
+{{- if .Values.infra.kafka.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -132,3 +133,5 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30080
+
+{{- end }}

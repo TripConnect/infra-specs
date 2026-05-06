@@ -1,3 +1,10 @@
 image:
   name: config-service
 containerPort: 31070
+infra:
+  kafka:
+    enabled: false
+  mongo:
+    enabled: false
+  postgres:
+    enabled: false

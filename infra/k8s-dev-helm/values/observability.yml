@@ -1,0 +1,17 @@
+workload:
+  enabled: false
+infra:
+  kafka:
+    enabled: false
+  mongo:
+    enabled: false
+  postgres:
+    enabled: false
+observability:
+  enabled: true
+  instrumentation:
+    enabled: false
+  jaeger:
+    enabled: true
+  collector:
+    enabled: true

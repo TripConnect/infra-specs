@@ -3,3 +3,10 @@ image:
 containerPort: 31071
 service:
   type: NodePort
+infra:
+  kafka:
+    enabled: false
+  mongo:
+    enabled: false
+  postgres:
+    enabled: false

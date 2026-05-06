@@ -1,3 +1,10 @@
 image:
   name: user-service
 containerPort: 31072
+infra:
+  kafka:
+    enabled: false
+  mongo:
+    enabled: false
+  postgres:
+    enabled: false

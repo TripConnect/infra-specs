@@ -1,3 +1,4 @@
+{{- if .Values.workload.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,3 +12,5 @@ spec:
     - port: {{ include "k8s-dev-helm.containerPort" . }}
       targetPort: {{ include "k8s-dev-helm.containerPort" . }}
       name: grpc
+
+{{- end }}
