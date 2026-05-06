@@ -81,5 +81,21 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
   value: {{ .Values.observability.instrumentation.propagators | quote }}
 - name: OTEL_TRACES_SAMPLER
   value: {{ .Values.observability.instrumentation.tracesSampler | quote }}
+{{- if .Values.observability.instrumentation.nodejs.enabled }}
+- name: NODE_OPTIONS
+  value: {{ .Values.observability.instrumentation.nodejs.nodeOptions | quote }}
+- name: OTEL_NODE_RESOURCE_DETECTORS
+  value: {{ .Values.observability.instrumentation.nodejs.resourceDetectors | quote }}
+- name: OTEL_LOG_LEVEL
+  value: {{ .Values.observability.instrumentation.nodejs.logLevel | quote }}
+{{- if .Values.observability.instrumentation.nodejs.enabledInstrumentations }}
+- name: OTEL_NODE_ENABLED_INSTRUMENTATIONS
+  value: {{ .Values.observability.instrumentation.nodejs.enabledInstrumentations | quote }}
+{{- end }}
+{{- if .Values.observability.instrumentation.nodejs.disabledInstrumentations }}
+- name: OTEL_NODE_DISABLED_INSTRUMENTATIONS
+  value: {{ .Values.observability.instrumentation.nodejs.disabledInstrumentations | quote }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

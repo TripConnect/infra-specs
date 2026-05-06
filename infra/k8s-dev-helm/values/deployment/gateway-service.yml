@@ -3,3 +3,7 @@ image:
 containerPort: 31071
 service:
   type: NodePort
+observability:
+  instrumentation:
+    nodejs:
+      enabled: true

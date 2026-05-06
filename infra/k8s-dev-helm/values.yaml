@@ -31,6 +31,13 @@ observability:
     propagators: tracecontext,baggage
     tracesSampler: parentbased_always_on
     resourceAttributes: {}
+    nodejs:
+      enabled: false
+      nodeOptions: "--require @opentelemetry/auto-instrumentations-node/register"
+      resourceDetectors: env,host,os
+      logLevel: none
+      enabledInstrumentations: ""
+      disabledInstrumentations: ""
   jaeger:
     enabled: false
     name: jaeger

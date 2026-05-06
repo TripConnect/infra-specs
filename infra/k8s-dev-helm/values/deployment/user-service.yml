@@ -1,3 +1,7 @@
 image:
   name: user-service
 containerPort: 31072
+observability:
+  instrumentation:
+    nodejs:
+      enabled: true

@@ -80,6 +80,51 @@ helm upgrade --install observability .\infra\k8s-dev-helm -f .\infra\k8s-dev-hel
 
 To trace a GraphQL request, upgrade `gateway-service` and every downstream service involved in that request so each pod has OTEL env vars and application instrumentation enabled.
 
+### Node.js Auto-Instrumentation
+
+`gateway-service` and `user-service` enable Node.js zero-code instrumentation through Helm values:
+```yaml
+observability:
+  instrumentation:
+    nodejs:
+      enabled: true
+```
+
+The service image must include the OpenTelemetry packages before you upgrade the release:
+```sh
+pnpm add @opentelemetry/api @opentelemetry/auto-instrumentations-node
+```
+
+The chart injects:
+```sh
+NODE_OPTIONS=--require @opentelemetry/auto-instrumentations-node/register
+OTEL_NODE_RESOURCE_DETECTORS=env,host,os
+OTEL_LOG_LEVEL=none
+```
+
+If a Node.js pod fails with `Cannot find module '@opentelemetry/auto-instrumentations-node/register'`, rebuild and push the service image with the packages above, then run `helm upgrade` again.
+
+`OTEL_LOG_LEVEL=none` is intentional. Some Node.js packages, such as `sync-rpc`, expect child-process stdout to contain only machine-readable values. OpenTelemetry diagnostic logs are written to `console`, so leaving the default `info` level can break those packages during startup.
+
+### Read Service-To-Service Timing
+
+Use `Search`, not Jaeger's own internal traces. Select `gateway-service`, run the GraphQL request, then open a trace whose root operation is the GraphQL request. A useful trace should show more than one service and more than one span, for example:
+```text
+gateway-service /graphql
+  user-service grpc.user.UserService/GetProfile
+  chat-service grpc.chat.ChatService/ListRooms
+  twofa-service grpc.twofa.TwoFaService/Verify
+```
+
+The trace timeline shows the slow span directly. Parent span duration is the total time of that step; child spans show the downstream calls and their durations.
+
+Use `System Architecture` for the one-hop service graph, such as `gateway-service -> user-service`. With Jaeger all-in-one and in-memory storage, this graph can be calculated from traces already stored in memory. Use `Deep Dependency Graph` from search results when you want the request-specific chain through a focal service such as `gateway-service`.
+
+If the trace only shows `jaeger-all-in-one` or only one `gateway-service` span, the application services are not producing distributed spans yet. Helm provides `OTEL_*` env vars and the collector endpoint, but the service code still needs OpenTelemetry SDK or auto-instrumentation for:
+- inbound server spans, such as GraphQL HTTP/gRPC handlers
+- outbound client spans, such as HTTP/gRPC calls from gateway to downstream services
+- context propagation, usually W3C `traceparent`
+
 ## Port Forward And Dashboards
 
 Headlamp dashboard:
