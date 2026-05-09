@@ -1,4 +1,4 @@
-{{- if .Values.infra.postgres.enabled }}
+{{- if eq .Values.deploymentType "infra" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

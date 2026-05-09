@@ -44,28 +44,48 @@ Generate raw manifest:
 helm template gateway-service infra/k8s-dev-helm/ -f infra/k8s-dev-helm/values/deployment/gateway-service.yml > gateway-service.yaml
 ```
 
-## Deploy Services
+## Deployment Types
+
+This chart renders one resource group per release:
+- `deploymentType: infra` renders shared Mongo/Postgres/Kafka resources.
+- `deploymentType: observability` renders Jaeger and the OpenTelemetry Collector.
+- `deploymentType: backend-service` renders one backend Deployment and Service.
+
+The default is `backend-service`. `values.schema.json` validates the allowed values.
+
+## Deploy Stack
 
 Check release history:
 ```sh
 helm history config-service
 ```
 
-Deploy or upgrade a service:
+Deploy shared infra first:
+```sh
+helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\infra.yml
+```
+
+Deploy observability:
+```sh
+helm upgrade --install observability .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\observability.yml
+```
+
+Deploy backend services:
 ```sh
 helm upgrade --install config-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
+helm upgrade --install gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
+helm upgrade --install user-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\user-service.yml
+helm upgrade --install chat-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\chat-service.yml
+helm upgrade --install twofa-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\twofa-service.yml
 ```
 
-Gateway example without rendering shared infra resources:
-```sh
-helm upgrade --install gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml --set infra.kafka.enabled=false --set infra.mongo.enabled=false --set infra.postgres.enabled=false
-```
-
-Use the same `infra.*.enabled=false` flags for service releases that do not own the shared Mongo/Postgres/Kafka resources.
+If you are moving from the older chart where `user-service` owned shared infra, reset the dev cluster first or manually migrate Helm ownership before using the separate `tripconnect-infra` release.
 
 ## Observability
 
 This chart can install Jaeger all-in-one and an OpenTelemetry Collector. Service deployments receive standard OTEL env vars by default and export traces to `http://otel-collector:4317`.
+
+The observability values file sets `deploymentType: observability`, so the `observability` release renders only Jaeger and the OpenTelemetry Collector.
 
 Dry run:
 ```sh
@@ -82,13 +102,12 @@ To trace a GraphQL request, upgrade `gateway-service` and every downstream servi
 
 ### Node.js Auto-Instrumentation
 
-`gateway-service` and `user-service` enable Node.js zero-code instrumentation through Helm values:
+All Node.js services except `chat-service` enable zero-code instrumentation by setting their runtime:
 ```yaml
-observability:
-  instrumentation:
-    nodejs:
-      enabled: true
+runtime: nodejs
 ```
+
+Allowed runtime values are validated by `values.schema.json`: empty string for no runtime-specific instrumentation, or `nodejs` for Node.js auto-instrumentation.
 
 The service image must include the OpenTelemetry packages before you upgrade the release:
 ```sh

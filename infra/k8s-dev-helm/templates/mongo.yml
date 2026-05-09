@@ -1,4 +1,4 @@
-{{- if .Values.infra.mongo.enabled }}
+{{- if eq .Values.deploymentType "infra" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

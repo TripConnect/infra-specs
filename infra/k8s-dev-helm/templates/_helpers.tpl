@@ -62,7 +62,7 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
 {{- end }}
 
 {{ define "k8s-dev-helm.otelEnv" -}}
-{{- if and .Values.observability.enabled .Values.observability.instrumentation.enabled }}
+{{- if .Values.observability.instrumentation }}
 - name: OTEL_SERVICE_NAME
   value: {{ include "k8s-dev-helm.deployment-name" . | quote }}
 - name: OTEL_RESOURCE_ATTRIBUTES
@@ -81,7 +81,7 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
   value: {{ .Values.observability.instrumentation.propagators | quote }}
 - name: OTEL_TRACES_SAMPLER
   value: {{ .Values.observability.instrumentation.tracesSampler | quote }}
-{{- if .Values.observability.instrumentation.nodejs.enabled }}
+{{- if eq .Values.runtime "nodejs" }}
 - name: NODE_OPTIONS
   value: {{ .Values.observability.instrumentation.nodejs.nodeOptions | quote }}
 - name: OTEL_NODE_RESOURCE_DETECTORS

@@ -1,4 +1,4 @@
-{{- if and .Values.observability.enabled .Values.observability.jaeger.enabled }}
+{{- if eq .Values.deploymentType "observability" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

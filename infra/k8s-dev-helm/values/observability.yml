@@ -1,17 +1,31 @@
-workload:
-  enabled: false
-infra:
-  kafka:
-    enabled: false
-  mongo:
-    enabled: false
-  postgres:
-    enabled: false
+deploymentType: observability
 observability:
-  enabled: true
-  instrumentation:
-    enabled: false
   jaeger:
-    enabled: true
+    name: jaeger
+    replicaCount: 1
+    image:
+      repository: jaegertracing/all-in-one
+      tag: "1.57"
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+    resources: {}
   collector:
-    enabled: true
+    name: otel-collector
+    replicaCount: 1
+    image:
+      repository: otel/opentelemetry-collector-contrib
+      tag: "0.101.0"
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+    memoryLimiter:
+      checkInterval: 1s
+      limitMib: 256
+      spikeLimitMib: 64
+    exporters:
+      jaeger:
+        endpoint: jaeger:4317
+        tls:
+          insecure: true
+    resources: {}

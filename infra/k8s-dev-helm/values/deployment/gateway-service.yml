@@ -1,9 +1,6 @@
 image:
   name: gateway-service
 containerPort: 31071
+runtime: nodejs
 service:
   type: NodePort
-observability:
-  instrumentation:
-    nodejs:
-      enabled: true

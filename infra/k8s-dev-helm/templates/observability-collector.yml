@@ -1,4 +1,4 @@
-{{- if and .Values.observability.enabled .Values.observability.collector.enabled }}
+{{- if eq .Values.deploymentType "observability" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,7 +15,7 @@ data:
             endpoint: 0.0.0.0:4318
 
     processors:
-      {{- if .Values.observability.collector.memoryLimiter.enabled }}
+      {{- if .Values.observability.collector.memoryLimiter }}
       memory_limiter:
         check_interval: {{ .Values.observability.collector.memoryLimiter.checkInterval }}
         limit_mib: {{ .Values.observability.collector.memoryLimiter.limitMib }}
@@ -28,7 +28,7 @@ data:
         endpoint: {{ .Values.observability.collector.exporters.jaeger.endpoint }}
         tls:
           insecure: {{ .Values.observability.collector.exporters.jaeger.tls.insecure }}
-      {{- if .Values.observability.collector.exporters.debug.enabled }}
+      {{- if .Values.observability.collector.exporters.debug }}
       debug:
         verbosity: {{ .Values.observability.collector.exporters.debug.verbosity }}
       {{- end }}
@@ -37,8 +37,8 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [{{- if .Values.observability.collector.memoryLimiter.enabled }}memory_limiter, {{- end }}batch]
-          exporters: [otlp/jaeger{{- if .Values.observability.collector.exporters.debug.enabled }}, debug{{- end }}]
+          processors: [{{- if .Values.observability.collector.memoryLimiter }}memory_limiter, {{- end }}batch]
+          exporters: [otlp/jaeger{{- if .Values.observability.collector.exporters.debug }}, debug{{- end }}]
 ---
 apiVersion: apps/v1
 kind: Deployment
