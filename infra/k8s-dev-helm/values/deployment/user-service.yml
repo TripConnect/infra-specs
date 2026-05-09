@@ -1,3 +1,4 @@
 image:
   name: user-service
 containerPort: 31072
+runtime: nodejs

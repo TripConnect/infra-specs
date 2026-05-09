@@ -52,3 +52,50 @@ consul.hashicorp.com/transparent-proxy: {{ ternary "true" "false" .Values.consul
 {{ define "k8s-dev-helm.image" -}}
 {{ printf "%s/%s:%s" .Values.image.namespace (required "image.name is required" .Values.image.name) .Values.image.tag | quote }}
 {{- end }}
+
+{{ define "k8s-dev-helm.otelResourceAttributes" -}}
+{{- $attrs := list (printf "deployment.environment=%s" .Values.env) (printf "service.namespace=%s" (include "k8s-dev-helm.namespace" .)) (printf "k8s.namespace.name=%s" (include "k8s-dev-helm.namespace" .)) -}}
+{{- range $name, $value := .Values.observability.instrumentation.resourceAttributes }}
+{{- $attrs = append $attrs (printf "%s=%v" $name $value) -}}
+{{- end -}}
+{{ join "," $attrs }}
+{{- end }}
+
+{{ define "k8s-dev-helm.otelEnv" -}}
+{{- if .Values.observability.instrumentation }}
+- name: OTEL_SERVICE_NAME
+  value: {{ include "k8s-dev-helm.deployment-name" . | quote }}
+- name: OTEL_RESOURCE_ATTRIBUTES
+  value: {{ include "k8s-dev-helm.otelResourceAttributes" . | quote }}
+- name: OTEL_EXPORTER_OTLP_ENDPOINT
+  value: {{ .Values.observability.instrumentation.endpoint | quote }}
+- name: OTEL_EXPORTER_OTLP_PROTOCOL
+  value: {{ .Values.observability.instrumentation.protocol | quote }}
+- name: OTEL_TRACES_EXPORTER
+  value: {{ .Values.observability.instrumentation.tracesExporter | quote }}
+- name: OTEL_METRICS_EXPORTER
+  value: {{ .Values.observability.instrumentation.metricsExporter | quote }}
+- name: OTEL_LOGS_EXPORTER
+  value: {{ .Values.observability.instrumentation.logsExporter | quote }}
+- name: OTEL_PROPAGATORS
+  value: {{ .Values.observability.instrumentation.propagators | quote }}
+- name: OTEL_TRACES_SAMPLER
+  value: {{ .Values.observability.instrumentation.tracesSampler | quote }}
+{{- if eq .Values.runtime "nodejs" }}
+- name: NODE_OPTIONS
+  value: {{ .Values.observability.instrumentation.nodejs.nodeOptions | quote }}
+- name: OTEL_NODE_RESOURCE_DETECTORS
+  value: {{ .Values.observability.instrumentation.nodejs.resourceDetectors | quote }}
+- name: OTEL_LOG_LEVEL
+  value: {{ .Values.observability.instrumentation.nodejs.logLevel | quote }}
+{{- if .Values.observability.instrumentation.nodejs.enabledInstrumentations }}
+- name: OTEL_NODE_ENABLED_INSTRUMENTATIONS
+  value: {{ .Values.observability.instrumentation.nodejs.enabledInstrumentations | quote }}
+{{- end }}
+{{- if .Values.observability.instrumentation.nodejs.disabledInstrumentations }}
+- name: OTEL_NODE_DISABLED_INSTRUMENTATIONS
+  value: {{ .Values.observability.instrumentation.nodejs.disabledInstrumentations | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
