@@ -27,5 +27,6 @@ spec:
               value: {{ include "k8s-dev-helm.deployment-name" . }}
             - name: NODE_ENV
               value: {{ .Values.env }}
+            {{- include "k8s-dev-helm.infraEnv" . | nindent 12 }}
             {{- include "k8s-dev-helm.otelEnv" . | nindent 12 }}
 {{- end }}

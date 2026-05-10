@@ -12,6 +12,18 @@ consul:
   transparentProxy: true
 service:
   type: ClusterIP
+infra:
+  namespace: infra
+  endpoints:
+    kafka:
+      host: kafka.infra.svc.cluster.local
+      port: 9092
+    postgres:
+      host: postgres.infra.svc.cluster.local
+      port: 5432
+    mongodb:
+      host: mongodb.infra.svc.cluster.local
+      port: 27017
 observability:
   instrumentation:
     endpoint: http://otel-collector.observability.svc.cluster.local:4317

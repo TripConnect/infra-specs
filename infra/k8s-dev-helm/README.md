@@ -2,6 +2,11 @@
 
 Helm chart for the Trip Connect development stack.
 
+Run the commands in this README from the repo root:
+```sh
+cd C:\UltimateWolf\trip-connect\infra-specs
+```
+
 ## Prerequisites
 
 Create namespaces:
@@ -32,17 +37,17 @@ Backend pods opt in to sidecar injection through pod annotations rendered by thi
 
 Lint check:
 ```sh
-helm lint infra/k8s-dev-helm/ --set image.name=test,containerPort=8080
+helm lint .\infra\k8s-dev-helm --set image.name=test,containerPort=8080
 ```
 
 Dry run:
 ```sh
-helm install k8s-dev-helm ./infra/k8s-dev-helm --dry-run=client --debug --set image.name=test,containerPort=8080
+helm install k8s-dev-helm .\infra\k8s-dev-helm --dry-run=client --debug --set image.name=test,containerPort=8080
 ```
 
 Generate raw manifest:
 ```sh
-helm template gateway-service infra/k8s-dev-helm/ -f infra/k8s-dev-helm/values/deployment/gateway-service.yml > gateway-service.yaml
+helm template gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml > gateway-service.yaml
 ```
 
 ## Deployment Types
@@ -65,12 +70,12 @@ Deploy shared infra first:
 helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm --namespace infra -f .\infra\k8s-dev-helm\values\infra.yml
 ```
 
-Shared Mongo, Postgres, Kafka, Zookeeper, and Kafka UI run in the `infra` namespace.
+Shared Mongo, Postgres, Kafka, Zookeeper, and Kafka UI run in the `infra` namespace. Backend services receive infra endpoints through env vars such as `POSTGRES_ADDRESS=postgres.infra.svc.cluster.local`.
 
 Deploy observability:
 ```sh
-helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
-helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability --create-namespace -f .\infra\k8s-dev-helm\values\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability --create-namespace -f .\infra\k8s-dev-helm\values\observability\otel-collector-values.yml
 ```
 
 Deploy backend services:
@@ -90,15 +95,15 @@ Jaeger and the OpenTelemetry Collector are installed with their upstream Helm ch
 
 Dry run:
 ```sh
-helm template jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
-helm template otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
+helm template jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-helm\values\observability\jaeger-values.yml
+helm template otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-helm\values\observability\otel-collector-values.yml
 helm template gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
 ```
 
 Install or upgrade:
 ```sh
-helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
-helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability --create-namespace -f .\infra\k8s-dev-helm\values\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability --create-namespace -f .\infra\k8s-dev-helm\values\observability\otel-collector-values.yml
 ```
 
 To trace a GraphQL request, upgrade `gateway-service` and every downstream service involved in that request so each pod has OTEL env vars and application instrumentation enabled.

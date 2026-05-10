@@ -36,6 +36,30 @@ app.kubernetes.io/component: {{ .component }}
 {{- end }}
 {{- end }}
 
+{{ define "k8s-dev-helm.infraEnv" -}}
+{{- $kafka := .Values.infra.endpoints.kafka -}}
+{{- $postgres := .Values.infra.endpoints.postgres -}}
+{{- $mongodb := .Values.infra.endpoints.mongodb -}}
+- name: KAFKA_BROKERS
+  value: {{ printf "%s:%v" $kafka.host $kafka.port | quote }}
+- name: KAFKA_ADDRESS
+  value: {{ $kafka.host | quote }}
+- name: KAFKA_PORT
+  value: {{ printf "%v" $kafka.port | quote }}
+- name: POSTGRES_ADDRESS
+  value: {{ $postgres.host | quote }}
+- name: POSTGRES_HOST
+  value: {{ $postgres.host | quote }}
+- name: POSTGRES_PORT
+  value: {{ printf "%v" $postgres.port | quote }}
+- name: MONGODB_ADDRESS
+  value: {{ $mongodb.host | quote }}
+- name: MONGODB_HOST
+  value: {{ $mongodb.host | quote }}
+- name: MONGODB_PORT
+  value: {{ printf "%v" $mongodb.port | quote }}
+{{- end }}
+
 {{ define "k8s-dev-helm.consulAnnotations" }}
 {{- if .Values.consul.inject -}}
 consul.hashicorp.com/connect-inject: {{ .Values.consul.inject | quote }}
