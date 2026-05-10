@@ -8,12 +8,15 @@ Create namespaces:
 ```sh
 kubectl create namespace tripconnect
 kubectl create namespace consul
+kubectl create namespace observability
 ```
 
 Add Helm repositories:
 ```sh
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 ```
 
@@ -22,10 +25,7 @@ Install Consul service mesh:
 helm install consul hashicorp/consul --namespace consul --set global.name=consul --set server.replicas=1 --set client.enabled=true --set ui.enabled=true --set connectInject.enabled=true
 ```
 
-Enable sidecar injection for application pods:
-```sh
-kubectl label namespace tripconnect consul.hashicorp.com/connect-inject=enabled
-```
+Backend pods opt in to sidecar injection through pod annotations rendered by this chart. Namespace-wide injection is not required; keep `observability` unlabeled for Consul injection.
 
 ## Validate Chart
 
@@ -48,7 +48,6 @@ helm template gateway-service infra/k8s-dev-helm/ -f infra/k8s-dev-helm/values/d
 
 This chart renders one resource group per release:
 - `deploymentType: infra` renders shared Mongo/Postgres/Kafka resources.
-- `deploymentType: observability` renders Jaeger and the OpenTelemetry Collector.
 - `deploymentType: backend-service` renders one backend Deployment and Service.
 
 The default is `backend-service`. `values.schema.json` validates the allowed values.
@@ -57,45 +56,46 @@ The default is `backend-service`. `values.schema.json` validates the allowed val
 
 Check release history:
 ```sh
-helm history config-service
+helm history config-service -n tripconnect
 ```
 
 Deploy shared infra first:
 ```sh
-helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\infra.yml
+helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\infra.yml
 ```
 
 Deploy observability:
 ```sh
-helm upgrade --install observability .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\observability.yml
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
 ```
 
 Deploy backend services:
 ```sh
-helm upgrade --install config-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
-helm upgrade --install gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
-helm upgrade --install user-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\user-service.yml
-helm upgrade --install chat-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\chat-service.yml
-helm upgrade --install twofa-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\twofa-service.yml
+helm upgrade --install config-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
+helm upgrade --install gateway-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
+helm upgrade --install user-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\user-service.yml
+helm upgrade --install chat-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\chat-service.yml
+helm upgrade --install twofa-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\twofa-service.yml
 ```
 
 If you are moving from the older chart where `user-service` owned shared infra, reset the dev cluster first or manually migrate Helm ownership before using the separate `tripconnect-infra` release.
 
 ## Observability
 
-This chart can install Jaeger all-in-one and an OpenTelemetry Collector. Service deployments receive standard OTEL env vars by default and export traces to `http://otel-collector:4317`.
-
-The observability values file sets `deploymentType: observability`, so the `observability` release renders only Jaeger and the OpenTelemetry Collector.
+Jaeger and the OpenTelemetry Collector are installed with their upstream Helm charts in the `observability` namespace. This chart only injects standard `OTEL_*` env vars into backend services and exports traces to `http://otel-collector.observability.svc.cluster.local:4317`.
 
 Dry run:
 ```sh
-helm template observability .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\observability.yml
+helm template jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
+helm template otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
 helm template gateway-service .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
 ```
 
 Install or upgrade:
 ```sh
-helm upgrade --install observability .\infra\k8s-dev-helm -f .\infra\k8s-dev-helm\values\observability.yml
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
 ```
 
 To trace a GraphQL request, upgrade `gateway-service` and every downstream service involved in that request so each pod has OTEL env vars and application instrumentation enabled.
@@ -167,7 +167,7 @@ kubectl port-forward svc/consul-ui -n consul 8500:80 # Export Consul UI dashboar
 
 Jaeger UI:
 ```shell
-kubectl -n tripconnect port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
+kubectl -n observability port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
 ```
 
 Kafka UI:
@@ -187,8 +187,9 @@ Dashboard URLs:
 ```sh
 kubectl get all -n tripconnect
 kubectl -n consul get pods
-kubectl -n tripconnect get pods,svc,endpoints -l app=jaeger
-kubectl -n tripconnect get pods,svc,endpoints -l app=otel-collector
+kubectl -n observability get deploy,svc jaeger otel-collector
+helm history jaeger -n observability
+helm history otel-collector -n observability
 ```
 
 ## Troubleshooting
@@ -208,13 +209,13 @@ kubectl delete namespace consul
 
 If Jaeger port-forward fails with `timed out waiting for the condition`, check whether the Jaeger pod exists and is Ready:
 ```sh
-kubectl -n tripconnect get deploy jaeger otel-collector
+kubectl -n observability get deploy,svc jaeger otel-collector
 kubectl -n tripconnect get events --sort-by=.lastTimestamp
 ```
 
 If the events show `failed calling webhook "consul-connect-injector.consul.hashicorp.com"`, fix or reinstall Consul first, then restart Jaeger and the collector:
 ```sh
-kubectl -n tripconnect rollout restart deploy/jaeger deploy/otel-collector
+kubectl -n observability rollout restart deploy/jaeger deploy/otel-collector
 ```
 
 If Jaeger only shows `gateway-service` or shows no spans, add OpenTelemetry SDK or auto-instrumentation in the service code and make sure gRPC/HTTP clients propagate W3C `traceparent` context. Helm can provide the collector, Jaeger, and OTEL env vars, but the applications still need to emit spans.

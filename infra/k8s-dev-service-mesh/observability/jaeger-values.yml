@@ -1,0 +1,15 @@
+fullnameOverride: jaeger
+
+jaeger:
+  image:
+    repository: jaegertracing/jaeger
+    tag: "2.17.0"
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

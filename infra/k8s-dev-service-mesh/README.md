@@ -7,16 +7,19 @@ Setup service mesh, infra, backend services, dashboards, and observability for t
 ```sh
 kubectl create namespace tripconnect
 kubectl create namespace consul
+kubectl create namespace observability
 
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 
 helm install consul hashicorp/consul --namespace consul --set global.name=consul --set server.replicas=1 --set client.enabled=true --set ui.enabled=true --set connectInject.enabled=true
-kubectl label namespace tripconnect consul.hashicorp.com/connect-inject=enabled
 
 helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\infra.yml
-helm upgrade --install observability .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\observability.yml
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
 
 helm upgrade --install config-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\config-service.yml
 helm upgrade --install gateway-service .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\deployment\gateway-service.yml
@@ -31,11 +34,14 @@ Namespaces:
 ```sh
 kubectl create namespace tripconnect
 kubectl create namespace consul
+kubectl create namespace observability
 ```
 
 Helm repo:
 ```sh
 helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 ```
 
@@ -44,10 +50,7 @@ Consul:
 helm install consul hashicorp/consul --namespace consul --set global.name=consul --set server.replicas=1 --set client.enabled=true --set ui.enabled=true --set connectInject.enabled=true
 ```
 
-Sidecar injection:
-```sh
-kubectl label namespace tripconnect consul.hashicorp.com/connect-inject=enabled
-```
+Backend pods are injected by pod annotations from `k8s-dev-helm`, so namespace-wide injection is not required. Keep `observability` unlabeled for Consul injection.
 
 ## Deploy Infra
 
@@ -82,9 +85,12 @@ Use one deployment path for infra/services in a fresh cluster. The Helm path is 
 
 ## OTel + Jaeger
 
+Observability uses upstream Helm charts in the `observability` namespace. Jaeger and the OTel Collector are separate releases, while backend services only receive `OTEL_*` env vars from `k8s-dev-helm`.
+
 ```sh
-helm upgrade --install observability .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\observability.yml
-kubectl -n tripconnect port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
+helm upgrade --install jaeger jaegertracing/jaeger --version 4.7.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\jaeger-values.yml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector --version 0.153.0 --namespace observability -f .\infra\k8s-dev-service-mesh\observability\otel-collector-values.yml
+kubectl -n observability port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
 ```
 
 Open `http://localhost:16686`.
@@ -112,7 +118,7 @@ Port-forward:
 kubectl -n kube-system port-forward svc/headlamp-ui 4466:80 # Expose K8S dashboard
 kubectl port-forward svc/gateway-service -n tripconnect 31071:31071 # Expose gateway
 kubectl port-forward svc/consul-ui -n consul 8500:80 # Export Consul UI dashboard
-kubectl -n tripconnect port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
+kubectl -n observability port-forward svc/jaeger 16686:16686 # Expose Jaeger UI
 ```
 
 URLs:
@@ -127,8 +133,11 @@ URLs:
 ```sh
 kubectl get all -n tripconnect
 kubectl get all -n consul
+kubectl get all -n observability
 helm list -n tripconnect
 helm history config-service -n tripconnect
+helm history jaeger -n observability
+helm history otel-collector -n observability
 ```
 
 ## Down
@@ -137,6 +146,8 @@ helm history config-service -n tripconnect
 kubectl delete -f infra/k8s-dev-service-mesh/infra/application.yml
 kubectl delete -f infra/k8s-dev-service-mesh/infra --recursive
 kubectl delete -f infra/k8s-dev-service-mesh/services --recursive
+helm uninstall otel-collector -n observability
+helm uninstall jaeger -n observability
 ```
 
 ## Troubleshooting
@@ -152,4 +163,9 @@ Helm release history is namespace-scoped. If `helm history config-service` retur
 ```shell
 helm history config-service -n tripconnect
 helm list -n tripconnect
+```
+
+If older instructions labeled the whole app namespace for injection, remove the label and let backend Helm releases opt in per pod:
+```shell
+kubectl label namespace tripconnect consul.hashicorp.com/connect-inject-
 ```

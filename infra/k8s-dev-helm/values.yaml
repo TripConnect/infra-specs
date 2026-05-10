@@ -14,7 +14,7 @@ service:
   type: ClusterIP
 observability:
   instrumentation:
-    endpoint: http://otel-collector:4317
+    endpoint: http://otel-collector.observability.svc.cluster.local:4317
     protocol: grpc
     tracesExporter: otlp
     metricsExporter: none

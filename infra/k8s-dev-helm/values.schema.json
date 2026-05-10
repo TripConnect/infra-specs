@@ -5,7 +5,7 @@
     "deploymentType": {
       "type": "string",
       "description": "Controls which resource group this release renders.",
-      "enum": ["backend-service", "infra", "observability"],
+      "enum": ["backend-service", "infra"],
       "default": "backend-service"
     },
     "runtime": {
