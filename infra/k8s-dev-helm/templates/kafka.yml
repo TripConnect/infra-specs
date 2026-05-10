@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: zookeeper
 spec:
   serviceName: zookeeper
@@ -29,7 +29,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: zookeeper
 spec:
   clusterIP: None
@@ -43,7 +43,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: kafka
 spec:
   serviceName: kafka
@@ -65,7 +65,7 @@ spec:
             - name: KAFKA_ZOOKEEPER_CONNECT
               value: "zookeeper:2181"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-0.kafka:9092"
+              value: {{ printf "PLAINTEXT://kafka-0.kafka.%s.svc.cluster.local:9092" (include "k8s-dev-helm.namespace" .) | quote }}
             - name: KAFKA_LISTENERS
               value: "PLAINTEXT://0.0.0.0:9092"
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
@@ -80,7 +80,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: kafka
 spec:
   clusterIP: None
@@ -94,7 +94,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: kafka-ui
 spec:
   replicas: 1
@@ -113,7 +113,7 @@ spec:
             - name: KAFKA_CLUSTERS_0_NAME
               value: "LocalCluster"
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-              value: "kafka-0.kafka:9092"
+              value: {{ printf "kafka-0.kafka.%s.svc.cluster.local:9092" (include "k8s-dev-helm.namespace" .) | quote }}
             - name: DYNAMIC_CONFIG_ENABLED
               value: "true"
           ports:
@@ -122,7 +122,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: tripconnect
+  namespace: {{ include "k8s-dev-helm.namespace" . }}
   name: kafka-ui
 spec:
   selector:

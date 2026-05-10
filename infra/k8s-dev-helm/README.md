@@ -7,6 +7,7 @@ Helm chart for the Trip Connect development stack.
 Create namespaces:
 ```sh
 kubectl create namespace tripconnect
+kubectl create namespace infra
 kubectl create namespace consul
 kubectl create namespace observability
 ```
@@ -61,8 +62,10 @@ helm history config-service -n tripconnect
 
 Deploy shared infra first:
 ```sh
-helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm --namespace tripconnect -f .\infra\k8s-dev-helm\values\infra.yml
+helm upgrade --install tripconnect-infra .\infra\k8s-dev-helm --namespace infra -f .\infra\k8s-dev-helm\values\infra.yml
 ```
+
+Shared Mongo, Postgres, Kafka, Zookeeper, and Kafka UI run in the `infra` namespace.
 
 Deploy observability:
 ```sh
@@ -186,8 +189,10 @@ Dashboard URLs:
 
 ```sh
 kubectl get all -n tripconnect
+kubectl get all -n infra
 kubectl -n consul get pods
 kubectl -n observability get deploy,svc jaeger otel-collector
+helm history tripconnect-infra -n infra
 helm history jaeger -n observability
 helm history otel-collector -n observability
 ```
